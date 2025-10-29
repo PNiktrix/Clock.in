@@ -1,21 +1,292 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>ESP32 Smart Alarm</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background: #0a0a0a;
-        color: #00ff88;
-      }
-      h1 { margin-top: 60px; }
-      p { color: #ccc; }
-    </style>
-  </head>
-  <body>
-    <h1>ESP32 Smart Alarm</h1>
-    <p>Welcome to my project page!</p>
-  </body>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Niktrix — Smart Clocks Catalog</title>
+  <meta name="description" content="Niktrix — modern and classic smart clocks. Catalog, prices, photos, cart and checkout demo.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2300b894'/%3E%3Ctext x='50' y='57' font-size='48' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'%3EN%3C/text%3E%3C/svg%3E">
+
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#94a3b8; --accent:#00b894; --glass:rgba(255,255,255,0.03);
+      --radius:12px; --max-width:1100px;
+      --shadow: 0 6px 18px rgba(2,6,23,0.6);
+      --glass-border: rgba(255,255,255,0.04);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial; background:linear-gradient(180deg,#071023 0%, #081426 50%, #04111b 100%); color:#dbeafe; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    .wrap{max-width:var(--max-width);margin:30px auto;padding:20px}
+
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:var(--accent);display:grid;place-items:center;font-weight:800;color:#002219}
+    .brand h1{margin:0;font-size:18px}
+    nav{display:flex;gap:12px;align-items:center}
+    nav a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    nav a:hover{color:#fff;background:var(--glass)}
+
+    .controls{display:flex;gap:10px;align-items:center}
+    .search{background:var(--card);border:1px solid var(--glass-border);padding:8px 12px;border-radius:10px;display:flex;gap:8px;align-items:center}
+    .search input{background:transparent;border:0;color:inherit;outline:none;width:220px}
+    .btn{background:var(--accent);color:#002219;padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .ghost{background:transparent;border:1px solid var(--glass-border);padding:8px 12px;border-radius:10px;color:var(--muted)}
+
+    .hero{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:center;margin-bottom:20px}
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid var(--glass-border);padding:22px;border-radius:14px;box-shadow:var(--shadow)}
+    .hero h2{margin:0 0 8px 0;font-size:22px}
+    .hero p{margin:0;color:var(--muted)}
+    .small-feature{display:flex;gap:10px;margin-top:12px}
+    .feature{background:var(--glass);padding:8px;border-radius:10px;font-size:13px;color:var(--muted)}
+
+    .filters{display:flex;gap:10px;align-items:center;margin-bottom:14px}
+    .select{background:var(--card);border:1px solid var(--glass-border);padding:8px;border-radius:10px;color:var(--muted)}
+
+    .products{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media (max-width:980px){.hero{grid-template-columns:1fr;}.products{grid-template-columns:repeat(2,1fr)}.search input{width:140px}}
+    @media (max-width:640px){.products{grid-template-columns:1fr}}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid var(--glass-border);padding:12px;border-radius:12px;overflow:hidden}
+    .thumb{height:140px;border-radius:8px;background-size:cover;background-position:center;margin-bottom:10px}
+    .prod-title{font-size:15px;margin:0 0 6px 0}
+    .prod-desc{font-size:12px;color:var(--muted);margin:0 0 12px}
+    .price-row{display:flex;justify-content:space-between;align-items:center}
+    .price{font-weight:800;color:var(--accent)}
+
+    .badge{display:inline-block;background:rgba(0,184,148,0.12);color:var(--accent);padding:4px 8px;border-radius:8px;font-size:12px;border:1px solid rgba(0,184,148,0.08)}
+
+    .cart{position:fixed;right:20px;bottom:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:14px;padding:12px;border:1px solid var(--glass-border);width:320px;max-height:70vh;overflow:auto;box-shadow:var(--shadow)}
+    .cart h3{margin:0 0 8px 0}
+    .cart .item{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    .cart .item img{width:56px;height:40px;object-fit:cover;border-radius:6px}
+    .cart .tot{display:flex;justify-content:space-between;margin-top:8px;font-weight:800}
+    .empty{color:var(--muted);text-align:center;padding:20px}
+
+    footer{margin-top:40px;color:var(--muted);text-align:center}
+
+    /* modal */
+    .modal-back{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center}
+    .modal{background:linear-gradient(180deg,#061021, #0b1624);padding:18px;border-radius:12px;width:92%;max-width:720px;border:1px solid var(--glass-border)}
+    .modal .row{display:flex;gap:12px}
+    .modal img{width:240px;height:180px;object-fit:cover;border-radius:8px}
+    .modal .meta{flex:1}
+    .close{cursor:pointer;background:transparent;border:0;color:var(--muted);font-size:20px}
+
+    /* little micro interactions */
+    .card:hover{transform:translateY(-6px);transition:all .2s}
+    .btn:active{transform:translateY(1px)}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">N</div>
+        <div>
+          <h1>Niktrix</h1>
+          <div style="color:var(--muted);font-size:12px;margin-top:2px">Smart Clocks & Timepieces</div>
+        </div>
+      </div>
+
+      <nav>
+        <a href="#home">Home</a>
+        <a href="#catalog">Catalog</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="controls">
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="search" placeholder="Search clocks, features...">
+        </div>
+        <select id="sort" class="select">
+          <option value="popular">Sort: Popular</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
+        <button class="btn" id="openCartBtn">Cart (<span id="cartCount">0</span>)</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-card">
+        <h2>Niktrix — Clocks Designed for Life</h2>
+        <p>Hand-picked digital and analog smart clocks for bedroom, living room and office. Clean UI, accurate time, alarms and gentle wake options.</p>
+        <div class="small-feature">
+          <div class="feature">Free Shipping</div>
+          <div class="feature">1 Year Warranty</div>
+          <div class="feature">Local Support</div>
+        </div>
+        <div style="margin-top:14px">
+          <button class="btn" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">Shop Catalog</button>
+          <button class="ghost" style="margin-left:8px" onclick="openDemo()">Demo Mode</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="hero-card">
+          <h3 style="margin-top:0">Featured — Sunrise Alarm</h3>
+          <img src="https://picsum.photos/seed/sunrise/600/400" style="width:100%;border-radius:8px;margin-top:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+            <div>
+              <div style="color:var(--muted);font-size:13px">From</div>
+              <div style="font-weight:800;color:var(--accent);font-size:18px">₹1,499</div>
+            </div>
+            <div>
+              <div class="badge">Best Seller</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="catalog">
+      <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:10px">
+        <h2 style="margin:0">Catalog</h2>
+        <div style="color:var(--muted);font-size:13px">Showing <span id="count">0</span> items</div>
+      </div>
+
+      <div class="products" id="products"></div>
+    </section>
+
+    <footer id="about">
+      <div style="max-width:900px;margin:20px auto;color:var(--muted)">
+        <h3>About Niktrix</h3>
+        <p>Niktrix builds simple, reliable clocks with beautiful displays and intuitive alarms. This demo site shows product catalog, prices and a working cart (demo checkout only).</p>
+      </div>
+      <div style="color:var(--muted);font-size:13px">Made with ❤️ by Niktrix · Demo site</div>
+    </footer>
+  </div>
+
+  <!-- Cart (hidden by default) -->
+  <div class="cart" id="cartBox" style="display:none">
+    <h3>Cart</h3>
+    <div id="cartItems"></div>
+    <div class="tot"><div>Total</div><div id="cartTotal">₹0</div></div>
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <button class="btn" onclick="checkout()">Checkout</button>
+      <button class="ghost" onclick="closeCart()">Close</button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-back" id="modalBack">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <strong id="mTitle">Product</strong>
+        <button class="close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="row">
+        <img id="mImg" src="" alt="">
+        <div class="meta">
+          <div id="mPrice" style="font-weight:800;color:var(--accent);font-size:20px;margin-bottom:6px"></div>
+          <div id="mDesc" style="color:var(--muted);margin-bottom:8px"></div>
+          <div style="display:flex;gap:8px"><button class="btn" id="mAdd">Add to Cart</button><button class="ghost" onclick="closeModal()">Close</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Product data (editable) — clocks catalog
+    const products = [
+      {id:1, name:'Sunrise Wake Alarm', price:1499, img:'https://picsum.photos/seed/clock1/600/400', desc:'Gentle sunrise sim + FM radio + dual alarms'},
+      {id:2, name:'Minimal LED Desk', price:999, img:'https://picsum.photos/seed/clock2/600/400', desc:'Slim LED display, dimmable, 12/24h'},
+      {id:3, name:'Retro Flip Clock', price:1799, img:'https://picsum.photos/seed/clock3/600/400', desc:'Classic flip mechanism look with modern electronics'},
+      {id:4, name:'Projection Alarm', price:2199, img:'https://picsum.photos/seed/clock4/600/400', desc:'Projects time on ceiling, adjustable angle'},
+      {id:5, name:'Smart WiFi Clock', price:2999, img:'https://picsum.photos/seed/clock5/600/400', desc:'WiFi time sync, alarms, OTA ready'},
+      {id:6, name:'Travel Mini Clock', price:599, img:'https://picsum.photos/seed/clock6/600/400', desc:'Compact, battery-powered, travel friendly'}
+    ];
+
+    // Simple DOM helpers
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+
+    // Render products
+    function render(list){
+      const container = $('#products'); container.innerHTML='';
+      list.forEach(p=>{
+        const el = document.createElement('div'); el.className='card';
+        el.innerHTML = `
+          <div class="thumb" style="background-image:url('${p.img}')"></div>
+          <h3 class="prod-title">${p.name}</h3>
+          <p class="prod-desc">${p.desc}</p>
+          <div class="price-row">
+            <div class="price">₹${p.price}</div>
+            <div style="display:flex;gap:8px">
+              <button class="ghost" onclick='openModal(${p.id})'>View</button>
+              <button class="btn" onclick='addToCart(${p.id})'>Add</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+      $('#count').textContent = list.length;
+    }
+
+    // Search & sort
+    $('#search').addEventListener('input', e=>{
+      applyFilters();
+    });
+    $('#sort').addEventListener('change', applyFilters);
+
+    function applyFilters(){
+      const q = $('#search').value.toLowerCase().trim();
+      const sort = $('#sort').value;
+      let list = products.filter(p=> (p.name+p.desc).toLowerCase().includes(q));
+      if(sort==='price-asc') list.sort((a,b)=>a.price-b.price);
+      if(sort==='price-desc') list.sort((a,b)=>b.price-a.price);
+      render(list);
+    }
+
+    // Modal
+    function openModal(id){
+      const p = products.find(x=>x.id===id);
+      $('#mTitle').textContent = p.name;
+      $('#mImg').src = p.img;
+      $('#mPrice').textContent = `₹${p.price}`;
+      $('#mDesc').textContent = p.desc;
+      $('#mAdd').onclick = ()=>{ addToCart(id); closeModal(); };
+      $('#modalBack').style.display='flex';
+    }
+    function closeModal(){ $('#modalBack').style.display='none'; }
+
+    // Cart (localStorage)
+    let cart = JSON.parse(localStorage.getItem('nik_cart')||'[]');
+    function saveCart(){ localStorage.setItem('nik_cart', JSON.stringify(cart)); updateCartUI(); }
+    function addToCart(id){ const p = products.find(x=>x.id===id); const existing = cart.find(x=>x.id===id); if(existing){ existing.q++; } else { cart.push({id, q:1, name:p.name, price:p.price, img:p.img}); } saveCart(); }
+    function removeFromCart(id){ cart = cart.filter(x=>x.id!==id); saveCart(); }
+    function updateCartUI(){
+      $('#cartCount').textContent = cart.reduce((s,i)=>s+i.q,0);
+      const el = $('#cartItems'); el.innerHTML='';
+      if(cart.length===0){ el.innerHTML = '<div class="empty">Your cart is empty</div>'; $('#cartTotal').textContent='₹0'; return; }
+      let total=0;
+      cart.forEach(it=>{
+        total += it.price * it.q;
+        const d = document.createElement('div'); d.className='item';
+        d.innerHTML = `<img src='${it.img}'><div style='flex:1'><div style='font-weight:700'>${it.name}</div><div style='color:var(--muted);font-size:13px'>₹${it.price} × ${it.q}</div></div><div><button class='ghost' onclick='removeFromCart(${it.id})'>Remove</button></div>`;
+        el.appendChild(d);
+      });
+      $('#cartTotal').textContent = '₹'+total;
+    }
+
+    function openCart(){ $('#cartBox').style.display='block'; updateCartUI(); }
+    function closeCart(){ $('#cartBox').style.display='none'; }
+
+    $('#openCartBtn').addEventListener('click', ()=>{ openCart(); });
+
+    function checkout(){ if(cart.length===0){ alert('Cart empty'); return;} alert('Demo checkout — no real payments. Order total: ' + $('#cartTotal').textContent); cart=[]; saveCart(); closeCart(); }
+
+    function openDemo(){ alert('Demo mode: click items and add to cart. Use Checkout to simulate purchase.'); }
+
+    // Init
+    render(products);
+    updateCartUI();
+  </script>
+</body>
 </html>
